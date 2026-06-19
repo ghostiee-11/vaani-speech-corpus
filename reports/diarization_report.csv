@@ -1,0 +1,5 @@
+source_id,language,n_speakers,dominant_share,verdict
+en_01,en,2,0.941,REVIEW: multi-speaker
+en_02,en,2,0.983,single-speaker OK
+hi_01,hi,2,0.954,single-speaker OK
+

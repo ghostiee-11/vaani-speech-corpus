@@ -1,0 +1,35 @@
+# --- Secrets: NEVER commit (public repo) ---
+.env
+*.key
+*_secret*
+
+# --- Data: large + license-sensitive; reproduced via scripts ---
+data/raw/
+data/processed/
+data/clips/
+data/sarvam_jobs/
+.cache/
+*.wav
+*.mp3
+*.m4a
+*.flac
+
+# Keep folder placeholders
+!data/.gitkeep
+!reports/figures/.gitkeep
+
+# Generated local artifact (regenerate via make_review_html.py; audio links are local)
+review.html
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+
+# --- OS / editor ---
+.DS_Store
+.vscode/
+*.swp

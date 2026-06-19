@@ -1,0 +1,19 @@
+# Core pipeline
+sarvamai>=0.1.28          # Sarvam ASR (saaras:v3) + batch diarization (saarika) + LLM
+yt-dlp>=2025.1.1          # YouTube / CC audio acquisition
+python-dotenv>=1.0.0      # load SARVAM_API_KEY / HF_TOKEN from .env
+
+# Audio processing & QC (all CPU-friendly)
+soundfile>=0.12.1         # read/write WAV
+numpy>=1.26
+librosa>=0.10.2           # SNR/F0/bandwidth analysis
+pyloudnorm>=0.1.1         # EBU R128 loudness (LUFS) normalization
+silero-vad>=5.1           # voice-activity-detection segmentation (torch-based, CPU ok)
+
+# Dataset packaging & publishing
+datasets>=2.19.0
+huggingface_hub>=0.23.0
+pandas>=2.0
+matplotlib>=3.8           # QC figures for the report
+
+# ffmpeg is required and must be installed separately (brew install ffmpeg)

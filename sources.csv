@@ -1,0 +1,4 @@
+source_id,language,speaker_id,title,creator,url,license,type,local_path,clip_range,notes
+hi_01,hi,hi_kahanisuno,Algyojha (Premchand) - Kahani Suno,Kahani Suno,https://www.youtube.com/watch?v=Q1zQpnKyfb4,standard-youtube,youtube,,00:00:30-00:33:30,clean single narrator; diarizer over-splits character voices (verified via diarized transcript); ~33 min
+en_01,en,en_hcverma,Shadow and Diffraction - Prof H C Verma,H.C. Verma,https://www.youtube.com/watch?v=bALYnO_HvII,standard-youtube,youtube,,00:00:40-00:20:40,real Indian-English physics professor; clean no music; single speaker; ~20 min
+en_02,en,en_hcverma,Fermats Principle and Reflection - Prof H C Verma,H.C. Verma,https://www.youtube.com/watch?v=woGREVliFsA,standard-youtube,youtube,,00:00:40-00:14:40,same speaker (en_hcverma); clean; ~14 min
