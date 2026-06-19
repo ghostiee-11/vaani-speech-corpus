@@ -19,12 +19,6 @@
 
 > **This is a data-curation project, not a pipeline demo.** The scripts are deliberately simple. The value is in the judgment: every clip was listened to, every transcript human-corrected, every tag confirmed by ear, and every keep/cut decision is recorded in [`curation_log.md`](curation_log.md). The tools (Sarvam ASR / diarization / LLM, Silero-VAD, ffmpeg) assist; they do not decide.
 
-## 📌 About
-
-Vaani was built for the **Sarvam AI** take-home: assemble a ~60-minute single-speaker TTS training set (Indian English + Hindi) from YouTube, with accurate transcriptions and emotion/style tags, and publish it openly.
-
-The brief is explicit that this is a **data-quality and curation problem, not a coding problem**: *"listen to your data, look at it, iterate on it."* So the pipeline here is intentionally lean, and the effort went into choosing the right voices, listening to every clip, correcting the machine drafts, and documenting each decision. Sarvam's ASR, diarization, and LLM do the heavy lifting; a human makes every keep, cut, and tag call.
-
 ## 📊 At a glance
 
 | Split | Clips | Minutes | Speaker | Source |
