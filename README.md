@@ -19,6 +19,12 @@
 
 > **This is a data-curation project, not a pipeline demo.** The scripts are deliberately simple. The value is in the judgment: every clip was listened to, every transcript human-corrected, every tag confirmed by ear, and every keep/cut decision is recorded in [`curation_log.md`](curation_log.md). The tools (Sarvam ASR / diarization / LLM, Silero-VAD, ffmpeg) assist; they do not decide.
 
+## 📌 About
+
+Vaani was built for the **Sarvam AI** take-home: assemble a ~60-minute single-speaker TTS training set (Indian English + Hindi) from YouTube, with accurate transcriptions and emotion/style tags, and publish it openly.
+
+The brief is explicit that this is a **data-quality and curation problem, not a coding problem**: *"listen to your data, look at it, iterate on it."* So the pipeline here is intentionally lean, and the effort went into choosing the right voices, listening to every clip, correcting the machine drafts, and documenting each decision. Sarvam's ASR, diarization, and LLM do the heavy lifting; a human makes every keep, cut, and tag call.
+
 ## 📊 At a glance
 
 | Split | Clips | Minutes | Speaker | Source |
@@ -53,22 +59,41 @@ All thresholds live in [`src/config.py`](src/config.py).
 <img src="reports/figures/snr_hist.png" width="48%" alt="SNR distribution"/>
 </p>
 
-## ⚙️ How it works
+## 🏗️ Architecture
 
+A linear pipeline with one human checkpoint. Each stage is a small, single-purpose script that reads the previous stage's output and writes the next, so any step can be re-run independently.
+
+```mermaid
+flowchart TD
+    A["sources.csv<br/>human-curated"] --> B["01 download<br/>yt-dlp + aria2c"]
+    B --> C["02 preprocess<br/>ffmpeg 24kHz mono + trim"]
+    C --> D["03 verify_speaker<br/>Sarvam diarization"]
+    D --> E["04 segment<br/>Silero-VAD + loudness norm"]
+    E --> F["05 transcribe<br/>Sarvam ASR saaras:v3"]
+    F --> G["06 prefill<br/>Sarvam LLM normalize + emotion"]
+    G --> H{"HUMAN PASS<br/>listen, correct, tag, drop"}
+    H --> I["07 qc<br/>SNR, LUFS, peak, bandwidth gates"]
+    I --> J["08 build<br/>package + dataset card"]
+    J --> K[("HuggingFace<br/>vaani-speech-corpus")]
+    style H fill:#ffe6a7,stroke:#d4a017,stroke-width:2px
+    style K fill:#FFD21E,stroke:#b8860b
 ```
-sources.csv  (human sourcing decision)
-   |  01_download         yt-dlp (+aria2c) acquire YouTube audio
-   v  02_preprocess       ffmpeg -> 24 kHz mono, trim to clip_range
-   |  03_verify_speaker   Sarvam diarization: confirm single-speaker
-   v  04_segment          Silero-VAD -> 4 to 20 s clips, loudness-normalized
-   |  05_transcribe       Sarvam ASR (saaras:v3) -> draft transcripts
-   v  06_prefill_review   Sarvam LLM -> normalized text + emotion suggestions
-   |
-   +==  HUMAN PASS   listen to every clip, fix transcripts, confirm emotion,
-   |                 drop bad clips  (review.html + review_sheet.csv)
-   v  07_qc               audio metrics + gates (SNR / loudness / peak / bandwidth)
-   |  08_build_dataset    package + dataset card + push to HuggingFace
-```
+
+### Components
+
+| Module | Role |
+|:--|:--|
+| [`src/config.py`](src/config.py) | single source of truth for every quality threshold |
+| [`src/sarvam_client.py`](src/sarvam_client.py) | Sarvam API wrapper: retries, backoff, on-disk response cache |
+| [`src/utils.py`](src/utils.py) | audio I/O + QC measurements (LUFS, SNR, HF-edge bandwidth) |
+| `src/01_*.py` ... `src/08_*.py` | the eight pipeline stages |
+| [`review_sheet.csv`](review_sheet.csv) | the human curation surface (git-diffable edits) |
+
+### Data flow
+
+`raw audio -> processed WAV -> segments.csv -> transcribed.csv -> review_sheet.csv (human) -> qc_report.csv -> hf_export/`
+
+Intermediate audio lives under `data/` (git-ignored); decisions and metrics are committed as CSVs so the curation is auditable.
 
 ## 🗣️ Sarvam APIs used
 
